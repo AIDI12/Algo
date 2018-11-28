@@ -16,7 +16,7 @@ public class BinaryInsertionSort {
             int mid = 0;
             int r = i - 1;
             int l = 0;
-            while( l < r ){
+            while( l <= r ){
                 mid = (r + l)/2;
                 if (e.compareTo(arr[mid]) < 0){
                     r = mid - 1;
@@ -24,8 +24,12 @@ public class BinaryInsertionSort {
                     l = mid + 1;
                 }
             }
-            for (int j = i; j > l ; j--) {
-                swap(arr, j, j-1);
+            for(int j = i-1;j>=l;j--){
+                //从i-1到left依次向后移动一位,等待temp值插入
+                arr[j+1] = arr[j];
+            }
+            if(l != i ){
+                arr[l] = e;
             }
         }
     }
@@ -41,6 +45,7 @@ public class BinaryInsertionSort {
     public static void main(String[] args) {
         int N = 20000;
         Integer[] arr = SortHelper.generateRandomArray( N, 0, 1000000);
+        Integer[] arr1 = {8,9,5,3,2,1,7,6};
         SortHelper.testSort("sort.insertionsort.BinaryInsertionSort" , arr);
 
         return;

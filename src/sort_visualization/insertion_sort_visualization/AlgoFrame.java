@@ -53,8 +53,8 @@ public class AlgoFrame extends JFrame {
     public int getCanvasHeight(){return canvasHeight;}
 
     // TODO: 设置自己的数据
-    private SelectionSortData data;
-    public void render(SelectionSortData data){
+    private InsertionSortData data;
+    public void render(InsertionSortData data){
         this.data = data;
         repaint();
     }
@@ -68,7 +68,7 @@ public class AlgoFrame extends JFrame {
             // 双缓存
             super(true);
         }
-
+        //绘制
         @Override
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
@@ -95,18 +95,13 @@ public class AlgoFrame extends JFrame {
                 else{
                     AlgoVisHelper.setColor(g2d, AlgoVisHelper.Grey);
                 }
-
-                //正在比较的部分
-                if(i == data.currentCompareIndex){
+                if( i == data.currentIndex ){
                     AlgoVisHelper.setColor(g2d, AlgoVisHelper.LightBlue);
                 }
-                //当前最小值
-                if(i == data.currentMinIndex){
-                    AlgoVisHelper.setColor(g2d, AlgoVisHelper.Indigo);
-                }
-
                 //设置矩形的坐标以及宽高，每个矩形的x坐标为元素下标*矩形宽度，y坐标为面板高度-元素大小，矩形高度为元素大小
                 AlgoVisHelper.fillRectangle(g2d, i * w, canvasHeight - data.get(i), w - 1, data.get(i));
+                }
+
             }
         }
 
@@ -119,4 +114,4 @@ public class AlgoFrame extends JFrame {
             return new Dimension(canvasWidth, canvasHeight);
         }
     }
-}
+

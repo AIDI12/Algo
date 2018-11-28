@@ -12,18 +12,18 @@ import java.awt.event.MouseAdapter;
 public class AlgoVisualizer {
     private static int DELAY = 1;
     // TODO: 创建自己的数据
-    private SelectionSortData data;        // 数据
+    private InsertionSortData data;        // 数据
     private AlgoFrame frame;    // 视图
 
-    public AlgoVisualizer(int sceneWidth, int sceneHeight, int N){
+    public AlgoVisualizer(int sceneWidth, int sceneHeight, int N, InsertionSortData.Type dataType){
 
         // 初始化数据
-        data = new SelectionSortData(N, sceneHeight);
+        data = new InsertionSortData(N, sceneHeight, dataType);
 
         // 初始化视图
         //利用事务队列执行
         EventQueue.invokeLater(() -> {
-            frame = new AlgoFrame("Selection Sort Visualization", sceneWidth, sceneHeight);
+            frame = new AlgoFrame("Insertion Sort Visualization", sceneWidth, sceneHeight);
             // TODO: 根据情况决定是否加入键盘鼠标事件监听器
 //            frame.addKeyListener(new AlgoKeyListener());
 //            frame.addMouseListener(new AlgoMouseListener());
@@ -33,32 +33,48 @@ public class AlgoVisualizer {
         });
     }
 
+    public AlgoVisualizer(int sceneWidth, int sceneHeight, int N){
+        this(sceneWidth, sceneHeight, N, InsertionSortData.Type.Default);
+    }
+
     // 动画逻辑
     private void run(){
         //初始时，排好序的部分为0 ，正在比较的部分为-1，当前最小的为-1
-        setData(0,-1, -1);
-
+        setData(0,-1);
+//        //一般插入排序
+//        for (int i = 0; i < data.N(); i++) {
+//            setData(i, i);
+//            for (int j = i; j > 0 && data.get(j) < data.get(j-1) ; j--) {
+//                data.swap(j, j-1);
+//                setData(i+1, j-1);
+//            }
+//        }
+        //二分插入排序
         for (int i = 0; i < data.N(); i++) {
-            // 寻找[i, n)区间里的最小值的索引
-            int minIndex = i;
-            for (int j = i + 1; j < data.N(); j++) {
-                //排好序的部分为i ，正在比较的部分为j，当前最小的为minIndex
-                setData(i, j, minIndex);
-                if (data.get(j) < data.get(minIndex)){
-                    minIndex = j;
-                    //排好序的部分为i ，正在比较的部分为j，当前最小的为minIndex
-                    setData(i, j, minIndex);
+            setData(i, i);
+            int mid = 0;
+            int r = i - 1;
+            int l = 0;
+            while( l <= r ){
+                mid = (r + l)/2;
+                if (data.get(i) < data.get(mid)){
+                    r = mid - 1;
+                }else {
+                    l = mid + 1;
                 }
             }
-            data.swap(i, minIndex);
-            //排序完成
-            setData(data.N(), -1, -1);
+            for (int j = i; j > l ; j--) {
+                data.swap(j, j-1);
+                setData(i+1, j-1);
+            }
         }
+
+        //排序完成
+        setData(data.N(), -1);
     }
-    private void setData(int orderedIndex, int currentCompareIndex, int currentMinIndex){
+    private void setData(int orderedIndex, int currentIndex){
         data.orderedIndex = orderedIndex;
-        data.currentCompareIndex = currentCompareIndex;
-        data.currentMinIndex = currentMinIndex;
+        data.currentIndex = currentIndex;
 
         frame.render(data);
         AlgoVisHelper.pause(DELAY);
